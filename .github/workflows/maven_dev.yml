@@ -27,4 +27,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
+      env:
+        DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       run: mvn clean install -Dspring.profiles.active=dev
