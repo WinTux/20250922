@@ -7,13 +7,13 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-y-test:
 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        java: [17, 21]
+        os: [ubuntu-latest, macos-latest]
+        java: [21, 24]
     name: Pruebas de Java ${{ matrix.java }} en ${{ matrix.os }}
     steps:
     - name: Checkout del código
@@ -33,3 +33,31 @@ jobs:
           ${{ runner.os }}-maven-
     - name: Build y Test
       run: mvn clean verify
+  deploy:
+    needs: build-y-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: checkout de código
+        uses: actions/checkout@v4
+      - name: Preparando el JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+      - name: Cache de dependencias
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ubuntu-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ubuntu-maven
+      - name: Compilación de la aplicación
+        run: ./mvnw clean package -DskipTests
+      - name: Deploy a producción
+        run: |
+          echo "Realizando el deploy..."
+          # Usando el comando scp subimos el *.jar al servidor
+          # scp pepe@192.168.1.123:/var/logs...
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
