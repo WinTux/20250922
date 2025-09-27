@@ -32,4 +32,4 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Build y Test
-      run: ./mvnw clean verify
+      run: mvn clean verify
