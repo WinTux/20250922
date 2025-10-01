@@ -58,6 +58,12 @@ jobs:
             ubuntu-maven
       - name: Compilación de la aplicación
         run: ./mvnw clean package -DskipTests
+      - name: Upload de JAR a workflow artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: springboot-app
+          path: target/*.jar
+          #Pendiende para agregar un job o 2
       - name: Deploy a producción
         run: |
           echo "Realizando el deploy..."
