@@ -21,19 +21,7 @@ jobs:
     - name: Deploy a staging
       run: |
         echo "Deploy a STAGING en curso..."
-#        curl -X POST https://staging.pepe.com/deploy \
-#        -H "Authorization: Bearer ${{ secrets.STAGING_TOKEN }}"
-  deploy-prod:
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: production
-#      name: production
-#      url: https://miservidorapi.com
-    steps:
-    - uses: actions/checkout@v4
-    - name: compilar JAR
-      run: ./mvnw clean package -DskipTests
-    - name: Deploy a staging
-      run: |
-        echo "Deploy a STAGING en curso..."
+    - name: Descarga JAR desde workflow artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: springboot-app
