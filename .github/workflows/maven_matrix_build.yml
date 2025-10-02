@@ -59,7 +59,7 @@ jobs:
       - name: Compilación de la aplicación
         run: ./mvnw clean package -DskipTests
       - name: Upload de JAR a workflow artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: springboot-app
           path: target/*.jar
