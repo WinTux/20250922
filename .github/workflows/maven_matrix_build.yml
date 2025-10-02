@@ -63,7 +63,10 @@ jobs:
         with:
           name: springboot-app
           path: target/*.jar
-          #Pendiende para agregar un job o 2
+      - name: Descarga JAR desde workflow artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: springboot-app
       - name: Deploy a producción
         run: |
           echo "Realizando el deploy..."
