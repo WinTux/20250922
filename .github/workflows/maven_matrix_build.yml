@@ -31,12 +31,20 @@ jobs:
         key: ${{ runner.os }}-maven-${{hashFiles('**/pom.xml')}}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Build y Test
+    - name: Test
       run: mvn clean verify
+    - name: Compilación
+      run: ./mvnw clean package -DskipTests
+    - name: Upload de JAR a workflow artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: springboot-app
+        path: target/*.jar
     - name: Ejecutar análisis de código
       run: mvn sonar:sonar -Dsonar.projectKey=WinTux_20250922 -Dsonar.organization=wintux-1 -Dsonar.host.url=https://sonarcloud.io
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   deploy:
     needs: build-y-test
     runs-on: ubuntu-latest
@@ -56,13 +64,6 @@ jobs:
           key: ubuntu-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ubuntu-maven
-      - name: Compilación de la aplicación
-        run: ./mvnw clean package -DskipTests
-      - name: Upload de JAR a workflow artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: springboot-app
-          path: target/*.jar
       - name: Descarga JAR desde workflow artifacts
         uses: actions/download-artifact@v4
         with:
